@@ -4,8 +4,8 @@ import org.prgrms.kdt.controller.CustomerController;
 import org.prgrms.kdt.controller.VoucherController;
 import org.prgrms.kdt.controller.request.CreateCustomerRequest;
 import org.prgrms.kdt.controller.request.CreateVoucherRequest;
-import org.prgrms.kdt.controller.response.CustomerResponse;
 import org.prgrms.kdt.controller.response.VoucherResponse;
+import org.prgrms.kdt.domain.Customer;
 import org.prgrms.kdt.forward.io.Input;
 import org.prgrms.kdt.forward.io.Output;
 import org.prgrms.kdt.view.ConsoleView;
@@ -35,13 +35,13 @@ public class IOController implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         boolean exit = false;
         logger.info("Start : Voucher Manage Program");
-        output.write(consoleView.introduceCommand());
 
         while (!exit) {
             try {
+                output.write(consoleView.introduceCommand());
                 String command = input.readLine();
                 switch (command) {
                     case "create-customer" -> {
@@ -58,7 +58,7 @@ public class IOController implements CommandLineRunner {
                     }
                     case "list" -> {
                         logger.info("Request <list voucher>");
-                        list();
+                        getAllVouchers();
                     }
                     case "exit" -> {
                         logger.info("Request <exit>");
@@ -73,8 +73,6 @@ public class IOController implements CommandLineRunner {
                 logger.error(e.getMessage());
                 output.write("**" + e.getMessage());
             }
-
-            if (!exit) output.write(consoleView.introduceCommand());
         }
 
         input.close();
@@ -87,33 +85,39 @@ public class IOController implements CommandLineRunner {
         CreateVoucherRequest createVoucherRequest = new CreateVoucherRequest(requestedVoucherInfo);
         if (voucherController.createVoucher(createVoucherRequest)) {
             output.write(consoleView.saveVoucher());
-        } else output.write(consoleView.saveVoucherError());
+        } else {
+            output.write(consoleView.saveVoucherError());
+        }
     }
 
     private void createCustomer() {
         output.write(consoleView.requestCustomerInfoToCreate());
         String requestCustomerInfoToCreate = input.readLine();
         CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(requestCustomerInfoToCreate);
-        if (customerController.createCustomer(createCustomerRequest)){
+        if (customerController.createCustomer(createCustomerRequest)) {
             output.write(consoleView.saveCustomer());
+        } else {
+            output.write(consoleView.saveCustomerError());
         }
-        else output.write(consoleView.saveCustomerError());
     }
 
-    private void getCustomerByEmail(){
+    private void getCustomerByEmail() {
         output.write(consoleView.requestCustomerInfoToGet());
         String requestCustomerInfoToGet = input.readLine();
-        CustomerResponse customerResponse = customerController.getCustomerByEmail(requestCustomerInfoToGet);
-        if (customerResponse.customer() != null){
-            output.write(consoleView.getCustomer(customerResponse));
+        try {
+            Customer response = customerController.getCustomerByEmail(requestCustomerInfoToGet);
+            output.write(consoleView.getCustomer(response));
+        } catch (RuntimeException e) {
+            output.write(consoleView.getCustomerError());
         }
-        else output.write(consoleView.getCustomerError());
     }
 
-    private void list() {
+    private void getAllVouchers() {
         List<VoucherResponse> list = voucherController.getAllVouchers();
         if (list.isEmpty()) {
             output.write(consoleView.emptyVoucherList());
-        } else output.write(consoleView.listVoucher(list));
+        } else {
+            output.write(consoleView.listVoucher(list));
+        }
     }
 }

@@ -1,7 +1,7 @@
 package org.prgrms.kdt.view;
 
-import org.prgrms.kdt.controller.response.CustomerResponse;
 import org.prgrms.kdt.controller.response.VoucherResponse;
+import org.prgrms.kdt.domain.Customer;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,11 +21,11 @@ public class ConsoleView {
         return "======================= \n사용자의 이메일을 작성해주세요.";
     }
 
-    public String saveCustomer(){
+    public String saveCustomer() {
         return "======================= \n사용자가 저장되었습니다.";
     }
 
-    public String saveCustomerError(){
+    public String saveCustomerError() {
         return "======================= \n사용자를 저장할 수 없습니다.";
     }
 
@@ -33,11 +33,11 @@ public class ConsoleView {
         return "======================= \n찾고자 하는 사용자의 이메일을 입력해주세요.";
     }
 
-    public String getCustomer(CustomerResponse customerResponse){
-        return "======================= \n" + customerResponse.customer();
+    public String getCustomer(Customer customer) {
+        return "======================= \n" + customer;
     }
 
-    public String getCustomerError(){
+    public String getCustomerError() {
         return "======================= \n존재하지 않는 사용자입니다.";
     }
 

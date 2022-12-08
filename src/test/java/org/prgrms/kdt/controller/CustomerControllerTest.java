@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.prgrms.kdt.controller.request.CreateCustomerRequest;
-import org.prgrms.kdt.controller.response.CustomerResponse;
 import org.prgrms.kdt.domain.Customer;
 import org.prgrms.kdt.service.CustomerService;
 import org.prgrms.kdt.service.dto.CreateCustomerDto;
@@ -58,19 +57,17 @@ public class CustomerControllerTest {
         Customer customer = new Customer(email);
         when(customerService.getCustomerByEmail(email)).thenReturn(Optional.of(customer));
 
-        CustomerResponse response = customerController.getCustomerByEmail(email);
+        Customer response = customerController.getCustomerByEmail(email);
 
-        Assertions.assertEquals(response.customer().getEmail(), email);
+        Assertions.assertEquals(response.getEmail(), email);
     }
 
     @Test
     @DisplayName("[실패] 해당 이메일을 가지는 사용자가 존재하지 않을 경우")
-    void getCustomerByEmail_InvalidEmail(){
+    void getCustomerByEmail_InvalidEmail() {
         String email = "asdf@naver.com";
         when(customerService.getCustomerByEmail(email)).thenReturn(Optional.empty());
 
-        CustomerResponse response = customerController.getCustomerByEmail(email);
-
-        Assertions.assertNull(response.customer());
+        Assertions.assertThrows(RuntimeException.class, () -> customerController.getCustomerByEmail(email));
     }
 }

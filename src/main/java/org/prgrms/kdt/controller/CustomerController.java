@@ -1,7 +1,6 @@
 package org.prgrms.kdt.controller;
 
 import org.prgrms.kdt.controller.request.CreateCustomerRequest;
-import org.prgrms.kdt.controller.response.CustomerResponse;
 import org.prgrms.kdt.domain.Customer;
 import org.prgrms.kdt.service.CustomerService;
 import org.prgrms.kdt.service.dto.CreateCustomerDto;
@@ -19,15 +18,17 @@ public class CustomerController {
 
     public boolean createCustomer(CreateCustomerRequest createCustomerRequest) {
         CreateCustomerDto createCustomerDto = new CreateCustomerDto(createCustomerRequest.email());
-        if (customerService.hasDuplicatedCustomer(createCustomerDto.email())) return false;
-        else return customerService.createCustomer(createCustomerDto);
+        if (customerService.hasDuplicatedCustomer(createCustomerDto.email())) {
+            return false;
+        }
+        return customerService.createCustomer(createCustomerDto);
     }
 
-    public CustomerResponse getCustomerByEmail(String email) {
+    public Customer getCustomerByEmail(String email) {
         Optional<Customer> returnedCustomer = customerService.getCustomerByEmail(email);
         if (returnedCustomer.isEmpty()) {
-            return new CustomerResponse(null);
+            throw new RuntimeException("no value");
         }
-        return new CustomerResponse(returnedCustomer.get());
+        return returnedCustomer.get();
     }
 }
