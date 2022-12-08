@@ -23,7 +23,7 @@ import java.util.Optional;
 public class JdbcCustomerRepository implements CustomerRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private static final Logger logger = LoggerFactory.getLogger(MapVoucherRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcCustomerRepository.class);
 
     public JdbcCustomerRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

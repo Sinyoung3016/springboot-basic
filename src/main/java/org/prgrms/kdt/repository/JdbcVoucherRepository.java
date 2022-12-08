@@ -23,7 +23,7 @@ import java.util.Optional;
 @Repository
 public class JdbcVoucherRepository implements VoucherRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private static final Logger logger = LoggerFactory.getLogger(MapVoucherRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcVoucherRepository.class);
 
     public JdbcVoucherRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
