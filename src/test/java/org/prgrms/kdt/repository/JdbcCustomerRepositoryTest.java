@@ -24,7 +24,7 @@ public class JdbcCustomerRepositoryTest {
                 .password("root")
                 .type(MysqlDataSource.class)
                 .build();
-        Resource resource = new ClassPathResource("data.sql");
+        Resource resource = new ClassPathResource("schema.sql");
         ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(resource);
         databasePopulator.execute(dataSource);
         this.jdbcTemplate = new JdbcTemplate(dataSource);
