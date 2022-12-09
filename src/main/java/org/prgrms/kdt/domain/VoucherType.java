@@ -1,8 +1,5 @@
 package org.prgrms.kdt.domain;
 
-import org.prgrms.kdt.exception.WrongSalePriceException;
-import org.prgrms.kdt.exception.InvalidVoucherTypeException;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
@@ -14,14 +11,14 @@ public enum VoucherType {
     FIXED_AMOUNT_VOUCHER("fixed", (price, discountAmount) -> {
         double salePrice = price - discountAmount;
         if (salePrice < 0) {
-            throw new WrongSalePriceException();
+            throw new RuntimeException("할인가가 0보다 작습니다.");
         }
         return salePrice;
     }),
     PERCENT_DISCOUNT_VOUCHER("percent", (price, discountAmount) -> {
         double salePrice = price - ((price * discountAmount) / 100);
         if (salePrice < 0) {
-            throw new WrongSalePriceException();
+            throw new RuntimeException("할인가가 0보다 작습니다.");
         }
         return salePrice;
     });
@@ -49,6 +46,6 @@ public enum VoucherType {
 
     public static VoucherType getVoucherTypeByCode(String code) {
         return Optional.ofNullable(VOUCHERS.get(code))
-                .orElseThrow(InvalidVoucherTypeException::new);
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 바우처 타입입니다"));
     }
 }

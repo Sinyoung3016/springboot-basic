@@ -1,9 +1,8 @@
 package org.prgrms.kdt.domain;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.prgrms.kdt.exception.WrongSalePriceException;
 
 public class VoucherTypeTest {
     @Test
@@ -13,7 +12,8 @@ public class VoucherTypeTest {
         double price = 1000;
         double discountAmount = 10;
         double salePrice = voucherType.getSalePrice(price, discountAmount);
-        Assertions.assertEquals(salePrice, 900);
+
+        Assertions.assertThat(salePrice).isEqualTo(900);
     }
 
     @Test
@@ -23,7 +23,8 @@ public class VoucherTypeTest {
         double price = 1000;
         double discountAmount = 10;
         double salePrice = voucherType.getSalePrice(price, discountAmount);
-        Assertions.assertEquals(salePrice, 990);
+
+        Assertions.assertThat(salePrice).isEqualTo(990);
     }
 
     @Test
@@ -32,7 +33,10 @@ public class VoucherTypeTest {
         VoucherType voucherType = VoucherType.PERCENT_DISCOUNT_VOUCHER;
         double price = 1000;
         double discountAmount = 200;
-        Assertions.assertThrows(WrongSalePriceException.class, () -> voucherType.getSalePrice(price, discountAmount));
+
+        Assertions.assertThatThrownBy(() -> voucherType.getSalePrice(price, discountAmount))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("할인가가 0보다 작습니다.");
     }
 
     @Test
@@ -41,6 +45,9 @@ public class VoucherTypeTest {
         VoucherType voucherType = VoucherType.FIXED_AMOUNT_VOUCHER;
         double price = 1000;
         double discountAmount = 2000;
-        Assertions.assertThrows(WrongSalePriceException.class, () -> voucherType.getSalePrice(price, discountAmount));
+
+        Assertions.assertThatThrownBy(() -> voucherType.getSalePrice(price, discountAmount))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("할인가가 0보다 작습니다.");
     }
 }

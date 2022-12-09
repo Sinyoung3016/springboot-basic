@@ -1,7 +1,6 @@
 package org.prgrms.kdt.controller.request;
 
 import org.prgrms.kdt.domain.VoucherType;
-import org.prgrms.kdt.exception.InvalidRequestException;
 
 public class CreateVoucherRequest {
 
@@ -11,7 +10,7 @@ public class CreateVoucherRequest {
     public CreateVoucherRequest(String requestVoucherInfo) {
         String[] request = requestVoucherInfo.split(":");
         if (request.length != 2) {
-            throw new InvalidRequestException();
+            throw new RuntimeException("존재하지 않는 바우처 타입입니다");
         }
         this.voucherType = VoucherType.getVoucherTypeByCode(request[0]);
         this.discountAmount = Double.parseDouble(request[1]);
