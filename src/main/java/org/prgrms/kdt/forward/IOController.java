@@ -56,7 +56,7 @@ public class IOController implements CommandLineRunner {
                         logger.info("Request <create voucher>");
                         createVoucher();
                     }
-                    case "list" -> {
+                    case "get-all-vouchers" -> {
                         logger.info("Request <list voucher>");
                         getAllVouchers();
                     }

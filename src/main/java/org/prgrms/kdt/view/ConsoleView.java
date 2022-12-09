@@ -12,7 +12,7 @@ public class ConsoleView {
         return "=== Voucher Program === " +
                 "\nType exit to exit the program." +
                 "\nType create-voucher to create a new voucher." +
-                "\nType list to list all vouchers." +
+                "\nType get-all-vouchers to list all vouchers." +
                 "\nType create-customer to create a new customer" +
                 "\nType get-customer to get a customer";
     }
