@@ -1,6 +1,6 @@
 package org.prgrms.kdt.controller;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,11 +35,13 @@ public class VoucherControllerTest {
         String request = "percent:10";
         CreateVoucherRequest createVoucherRequest = new CreateVoucherRequest(request);
         CreateVoucherDto createVoucherDto = new CreateVoucherDto(voucherType, discountAmount);
-        when(voucherService.createVoucher(createVoucherDto)).thenReturn(true);
+        Voucher voucher = new Voucher(voucherType, discountAmount);
+        when(voucherService.createVoucher(createVoucherDto)).thenReturn(voucher);
 
-        boolean result = voucherController.createVoucher(createVoucherRequest);
+        Voucher savedVoucher = voucherController.createVoucher(createVoucherRequest);
 
-        Assertions.assertTrue(result);
+        Assertions.assertThat(savedVoucher).hasFieldOrProperty("id");
+        Assertions.assertThat(savedVoucher.getVoucherType()).isEqualTo(voucherType);
     }
 
     @Test
@@ -47,11 +49,10 @@ public class VoucherControllerTest {
     void createVoucherTest_fail() {
         String request = "percent:10";
         CreateVoucherRequest createVoucherRequest = new CreateVoucherRequest(request);
-        when(voucherService.createVoucher(any())).thenReturn(false);
+        when(voucherService.createVoucher(any())).thenThrow(RuntimeException.class);
 
-        boolean result = voucherController.createVoucher(createVoucherRequest);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThatThrownBy(() -> voucherController.createVoucher(createVoucherRequest))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -64,7 +65,7 @@ public class VoucherControllerTest {
 
         List<VoucherResponse> allVouchers = voucherController.getAllVouchers();
 
-        Assertions.assertEquals(allVouchers.size(), 1);
-        Assertions.assertEquals(allVouchers.get(0).getClass(), VoucherResponse.class);
+        Assertions.assertThat(allVouchers.size()).isEqualTo(1);
+        Assertions.assertThat(allVouchers.get(0)).isInstanceOf(VoucherResponse.class);
     }
 }

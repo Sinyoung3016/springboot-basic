@@ -83,9 +83,10 @@ public class IOController implements CommandLineRunner {
         output.write(consoleView.requestVoucherInfo());
         String requestedVoucherInfo = input.readLine();
         CreateVoucherRequest createVoucherRequest = new CreateVoucherRequest(requestedVoucherInfo);
-        if (voucherController.createVoucher(createVoucherRequest)) {
+        try {
+            voucherController.createVoucher(createVoucherRequest);
             output.write(consoleView.saveVoucher());
-        } else {
+        } catch (RuntimeException e) {
             output.write(consoleView.saveVoucherError());
         }
     }

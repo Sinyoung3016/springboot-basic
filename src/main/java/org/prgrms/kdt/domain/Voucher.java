@@ -7,7 +7,6 @@ import java.util.Objects;
 public class Voucher {
 
     @Id
-    @Column
     private long id;
     @Enumerated(EnumType.STRING)
     private VoucherType voucherType;

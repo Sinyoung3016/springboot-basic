@@ -16,10 +16,10 @@ public class VoucherService {
         this.voucherRepository = voucherRepository;
     }
 
-    public boolean createVoucher(CreateVoucherDto createVoucherDto) {
+    public Voucher createVoucher(CreateVoucherDto createVoucherDto) {
         Voucher newVoucher = new Voucher(createVoucherDto.voucherType(), createVoucherDto.discountAmount());
         Optional<Voucher> returnedVoucher = voucherRepository.saveVoucher(newVoucher);
-        return returnedVoucher.isPresent();
+        return returnedVoucher.orElseThrow(() -> new RuntimeException("Can't Create a new Voucher"));
     }
 
     public List<Voucher> getAllVouchers() {

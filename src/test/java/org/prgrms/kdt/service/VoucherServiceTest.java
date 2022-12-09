@@ -1,6 +1,6 @@
 package org.prgrms.kdt.service;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,9 +36,10 @@ public class VoucherServiceTest {
         when(voucherRepository.saveVoucher(any())).thenReturn(Optional.of(voucher));
 
         CreateVoucherDto dto = new CreateVoucherDto(voucherType, discountAmount);
-        boolean result = voucherService.createVoucher(dto);
+        Voucher returnedVoucher = voucherService.createVoucher(dto);
 
-        Assertions.assertTrue(result);
+        Assertions.assertThat(returnedVoucher).hasFieldOrProperty("id");
+        Assertions.assertThat(returnedVoucher.getVoucherType()).isEqualTo(voucherType);
     }
 
     @Test
@@ -48,9 +49,9 @@ public class VoucherServiceTest {
         double discountAmount = 10;
         CreateVoucherDto dto = new CreateVoucherDto(voucherType, discountAmount);
 
-        boolean result = voucherService.createVoucher(dto);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThatThrownBy(() -> voucherService.createVoucher(dto))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Can't Create a new Voucher");
     }
 
     @Test
@@ -63,6 +64,6 @@ public class VoucherServiceTest {
 
         List<Voucher> allVouchers = voucherService.getAllVouchers();
 
-        Assertions.assertEquals(allVouchers.size(), 1);
+        Assertions.assertThat(allVouchers.size()).isEqualTo(1);
     }
 }

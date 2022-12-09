@@ -22,7 +22,7 @@ public class CustomerService {
             throw new RuntimeException("Duplicated Customer exist");
         }
         Optional<Customer> returnedCustomer = customerRepository.saveCustomer(newCustomer);
-        return returnedCustomer.orElseThrow(RuntimeException::new);
+        return returnedCustomer.orElseThrow(() -> new RuntimeException("Can't create a new Customer"));
     }
 
     public Customer getCustomerByEmail(String email) {
