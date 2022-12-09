@@ -47,7 +47,6 @@ public class VoucherServiceTest {
         VoucherType voucherType = VoucherType.PERCENT_DISCOUNT_VOUCHER;
         double discountAmount = 10;
         CreateVoucherDto dto = new CreateVoucherDto(voucherType, discountAmount);
-        when(voucherRepository.saveVoucher(any())).thenReturn(Optional.empty());
 
         boolean result = voucherService.createVoucher(dto);
 

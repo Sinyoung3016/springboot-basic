@@ -1,16 +1,14 @@
 package org.prgrms.kdt.controller;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.prgrms.kdt.controller.request.CreateCustomerRequest;
 import org.prgrms.kdt.domain.Customer;
 import org.prgrms.kdt.service.CustomerService;
-import org.prgrms.kdt.service.dto.CreateCustomerDto;
 
-import java.util.Optional;
-
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,14 +26,14 @@ public class CustomerControllerTest {
     @DisplayName("[성공] 사용자 저장 요청 처리하기")
     void createCustomerTest() {
         String email = "asdf@naver.com";
+        Customer customer = new Customer(email);
         CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(email);
-        CreateCustomerDto createCustomerDto = new CreateCustomerDto(email);
-        when(customerService.hasDuplicatedCustomer(email)).thenReturn(false);
-        when(customerService.createCustomer(createCustomerDto)).thenReturn(true);
+        when(customerService.createCustomer(any())).thenReturn(customer);
 
-        boolean result = customerController.createCustomer(createCustomerRequest);
+        Customer returnedCustomer = customerController.createCustomer(createCustomerRequest);
 
-        Assertions.assertTrue(result);
+        Assertions.assertThat(returnedCustomer.getEmail()).isEqualTo(email);
+        Assertions.assertThat(returnedCustomer).hasFieldOrProperty("id");
     }
 
     @Test
@@ -43,11 +41,10 @@ public class CustomerControllerTest {
     void createCustomerTest_duplicatedUserEmail() {
         String email = "asdf@naver.com";
         CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(email);
-        when(customerService.hasDuplicatedCustomer(email)).thenReturn(true);
+        when(customerService.createCustomer(any())).thenThrow(RuntimeException.class);
 
-        boolean result = customerController.createCustomer(createCustomerRequest);
-
-        Assertions.assertFalse(result);
+        Assertions.assertThatThrownBy(() -> customerController.createCustomer(createCustomerRequest))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -55,19 +52,20 @@ public class CustomerControllerTest {
     void getCustomerByEmail() {
         String email = "asdf@naver.com";
         Customer customer = new Customer(email);
-        when(customerService.getCustomerByEmail(email)).thenReturn(Optional.of(customer));
+        when(customerService.getCustomerByEmail(email)).thenReturn(customer);
 
-        Customer response = customerController.getCustomerByEmail(email);
+        Customer returnedCustomer = customerController.getCustomerByEmail(email);
 
-        Assertions.assertEquals(response.getEmail(), email);
+        Assertions.assertThat(returnedCustomer.getEmail()).isEqualTo(email);
     }
 
     @Test
     @DisplayName("[실패] 해당 이메일을 가지는 사용자가 존재하지 않을 경우")
     void getCustomerByEmail_InvalidEmail() {
         String email = "asdf@naver.com";
-        when(customerService.getCustomerByEmail(email)).thenReturn(Optional.empty());
+        when(customerService.getCustomerByEmail(email)).thenThrow(RuntimeException.class);
 
-        Assertions.assertThrows(RuntimeException.class, () -> customerController.getCustomerByEmail(email));
+        Assertions.assertThatThrownBy(() -> customerController.getCustomerByEmail(email))
+                .isInstanceOf(RuntimeException.class);
     }
 }

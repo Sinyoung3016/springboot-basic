@@ -16,21 +16,26 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public boolean createCustomer(CreateCustomerDto createCustomerDto) {
+    public Customer createCustomer(CreateCustomerDto createCustomerDto) {
         Customer newCustomer = new Customer(createCustomerDto.email());
+        if (hasDuplicatedCustomer(createCustomerDto.email())) {
+            throw new RuntimeException("Duplicated Customer exist");
+        }
         Optional<Customer> returnedCustomer = customerRepository.saveCustomer(newCustomer);
-        return returnedCustomer.isPresent();
+        return returnedCustomer.orElseThrow(RuntimeException::new);
     }
 
-    public Optional<Customer> getCustomerByEmail(String email){
-        return customerRepository.getCustomerByEmail(email);
+    public Customer getCustomerByEmail(String email) {
+        return customerRepository.getCustomerByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Can't find Customer By Email"));
     }
 
-    public Optional<Customer> getCustomerById(long customerId) {
-        return customerRepository.getCustomerById(customerId);
+    public Customer getCustomerById(long customerId) {
+        return customerRepository.getCustomerById(customerId)
+                .orElseThrow(() -> new RuntimeException("Can't find Customer By Id"));
     }
 
-    public boolean hasDuplicatedCustomer(String email){
-        return getCustomerByEmail(email).isPresent();
+    public boolean hasDuplicatedCustomer(String email) {
+        return customerRepository.getCustomerByEmail(email).isPresent();
     }
 }

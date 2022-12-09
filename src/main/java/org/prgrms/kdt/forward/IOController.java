@@ -94,9 +94,10 @@ public class IOController implements CommandLineRunner {
         output.write(consoleView.requestCustomerInfoToCreate());
         String requestCustomerInfoToCreate = input.readLine();
         CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(requestCustomerInfoToCreate);
-        if (customerController.createCustomer(createCustomerRequest)) {
+        try {
+            customerController.createCustomer(createCustomerRequest);
             output.write(consoleView.saveCustomer());
-        } else {
+        } catch (RuntimeException e) {
             output.write(consoleView.saveCustomerError());
         }
     }
